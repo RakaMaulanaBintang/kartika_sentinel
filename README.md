@@ -23,7 +23,7 @@ Purwarupa sistem **penangkalan siber** untuk Kartika Cyber Hackathon 2026 (kateg
 13. [Konfigurasi](#13-konfigurasi)
 14. [Keamanan sistem ini sendiri](#14-keamanan-sistem-ini-sendiri)
 15. [Hasil pengujian dan akurasi model](#15-hasil-pengujian-dan-akurasi-model)
-16. [Batasan dan rencana pengembangan](#16-batasan-dan-rencana-pengembangan)
+16. [Batasan](#16-batasan)
 17. [Struktur folder](#17-struktur-folder)
 
 ---
