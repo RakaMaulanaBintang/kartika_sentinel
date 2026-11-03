@@ -383,7 +383,7 @@ Lewat variabel lingkungan:
 
 ---
 
-## 16. Batasan dan rencana pengembangan
+## 16. Batasan
 
 **Batasan purwarupa saat ini**
 
@@ -392,15 +392,6 @@ Lewat variabel lingkungan:
 - Berjalan sebagai **satu proses** (belum clustering atau high availability).
 - Model dilatih pada data sintetis; kunci vault demo disimpan di `vault_keys.json` untuk keperluan peragaan.
 - Fingerprint berbasis header dan JavaScript bisa dipalsukan penyerang yang canggih; ia pelengkap, bukan identitas pasti.
-
-**Rencana pengembangan**
-
-- Persistensi ke SQLite/PostgreSQL dan Redis untuk blocklist bersama.
-- Aksi mitigasi nyata ke `iptables`/`nftables` atau API firewall.
-- Pelatihan ulang dengan dataset publik (NSL-KDD, CIC-IDS2017) dan evaluasi pada traffic nyata.
-- Kunci di HSM atau secret manager; rotasi kunci vault terjadwal.
-- Peran operator (admin dan pengamat), dan ekspor laporan insiden PDF.
-- Penyebaran on-premise tanpa cloud untuk menjaga kedaulatan data.
 
 ---
 
@@ -428,3 +419,6 @@ kartika_sentinel/
 ```
 
 **Teknologi:** Python, FastAPI, scikit-learn (Isolation Forest), `cryptography` (AES-GCM, Fernet), httpx, HTML/CSS/JavaScript tanpa framework.
+
+# SUPPORT BY :
+**Sleep Not Found**
