@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KARTIKA-SENTINEL</title>
+<style>
+:root{
+  --bg:#f6f8fb;--card:#fff;--ink:#0f172a;--ink2:#475569;--ink3:#94a3b8;--line:#e5eaf1;--soft:#f1f5f9;
+  --accent:#10b981;--accent-d:#059669;--accent-soft:#d1fae5;
+  --blue:#0ea5e9;--blue-soft:#e0f2fe;--red:#e11d48;--red-soft:#ffe4e6;--amber:#d97706;--amber-soft:#fef3c7;
+  --crit:#be123c;--shadow:0 1px 2px rgba(15,23,42,.05),0 10px 28px -14px rgba(15,23,42,.14);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+:root[data-theme=dark]{
+  --bg:#0a1020;--card:#111a2e;--ink:#e8eef9;--ink2:#a5b3ca;--ink3:#64748b;--line:#1f2b44;--soft:#16213a;
+  --accent:#34d399;--accent-d:#10b981;--accent-soft:#0d3b2e;--blue:#38bdf8;--blue-soft:#0c2f45;
+  --red:#fb7185;--red-soft:#3b1522;--amber:#fbbf24;--amber-soft:#3a2c0b;--crit:#fb7185;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;
+  background-image:radial-gradient(900px 380px at 6% -8%,rgba(16,185,129,.10),transparent 60%),radial-gradient(800px 360px at 96% -6%,rgba(14,165,233,.10),transparent 60%);
+  background-attachment:fixed;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 48px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--ink2)}.faint{color:var(--ink3)}
+.hidden{display:none!important}
+
+/* header */
+header.top{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);display:grid;place-items:center;color:var(--accent)}
+h1{font-size:22px;margin:0;letter-spacing:-.01em;font-weight:800}
+h1 span{color:var(--accent)}
+.sub{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:13px;box-shadow:var(--shadow);transition:transform .08s,background .15s}
+.btn:hover{background:var(--soft)}.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-d)}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}.btn.danger:hover{filter:brightness(.92)}
+.btn.ghost{box-shadow:none;background:transparent}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:ping 1.8s infinite}
+.pill.off .dot{background:var(--red);animation:none}
+@keyframes ping{70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+
+/* tabs */
+nav.tabs{display:flex;gap:4px;background:var(--soft);padding:4px;border-radius:14px;margin-bottom:18px;overflow-x:auto;width:max-content;max-width:100%}
+nav.tabs button{border:0;background:transparent;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:13px;color:var(--ink2);white-space:nowrap}
+nav.tabs button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+nav.tabs .badge{margin-left:6px;background:var(--red);color:#fff;border-radius:999px;font-size:10.5px;padding:1px 7px}
+
+/* cards */
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g2{grid-template-columns:2fr 1fr}
+.g2e{grid-template-columns:1fr 1fr}
+@media(max-width:980px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g2,.g2e{grid-template-columns:1fr}}
+@media(max-width:480px){.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h2{font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin:0 0 12px;color:var(--ink2);font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.stat .v{font-family:var(--mono);font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.stat .l{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.stat .ico{width:30px;height:30px;border-radius:10px;display:grid;place-items:center}
+.c-blue{color:var(--blue)}.c-red{color:var(--red)}.c-amber{color:var(--amber)}.c-green{color:var(--accent)}
+.bg-blue{background:var(--blue-soft);color:var(--blue)}.bg-red{background:var(--red-soft);color:var(--red)}
+.bg-amber{background:var(--amber-soft);color:var(--amber)}.bg-green{background:var(--accent-soft);color:var(--accent)}
+
+/* alarm */
+.alarm{border:2px solid var(--crit);background:var(--red-soft);border-radius:18px;padding:16px 18px;margin-bottom:14px;animation:flash 1.4s ease-in-out 4}
+@keyframes flash{50%{box-shadow:0 0 0 6px rgba(225,29,72,.28)}}
+.alarm .t{display:flex;gap:10px;align-items:center;font-weight:800;color:var(--crit);font-size:15px;letter-spacing:.02em}
+.alarm dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px 18px;margin:12px 0 0}
+.alarm dt{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);font-weight:700}
+.alarm dd{margin:2px 0 0;font-family:var(--mono);font-size:12.5px;word-break:break-all}
+
+/* chart */
+.chart{height:190px;width:100%}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--ink2);font-weight:600}
+.legend i{display:inline-block;width:12px;height:4px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+/* feed */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.seg{display:flex;background:var(--soft);padding:3px;border-radius:11px}
+.seg button{border:0;background:transparent;padding:5px 11px;border-radius:8px;cursor:pointer;font-weight:700;font-size:12px;color:var(--ink2)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+input.in,select.in,textarea.in{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:8px 11px;outline:none;width:100%}
+input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.feed{max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:14px}
+.row{display:grid;grid-template-columns:64px 92px 120px 1fr 54px;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:12.5px}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--soft)}
+.row .tm{font-family:var(--mono);color:var(--ink3);font-size:11.5px}
+.row .ip{font-family:var(--mono);font-weight:600}
+.row .sm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .rk{font-family:var(--mono);text-align:right;font-weight:700}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:7px;white-space:nowrap}
+.tag.ok{background:var(--accent-soft);color:var(--accent-d)}
+.tag.warn{background:var(--amber-soft);color:var(--amber)}
+.tag.bad{background:var(--red-soft);color:var(--red)}
+.tag.crit{background:var(--crit);color:#fff}
+.tag.info{background:var(--blue-soft);color:var(--blue)}
+.row.crit{background:var(--red-soft);border-left:4px solid var(--crit)}
+.row.bad{background:color-mix(in srgb,var(--red-soft) 55%,transparent)}
+.detail{padding:10px 14px 14px;background:var(--soft);border-bottom:1px solid var(--line);font-size:12px}
+.detail pre{margin:8px 0 0;white-space:pre-wrap;word-break:break-all;font-family:var(--mono);font-size:11.5px;color:var(--ink2)}
+.chip{display:inline-block;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:2px 8px;margin:2px 4px 2px 0;font-size:11.5px;font-family:var(--mono)}
+@media(max-width:700px){.row{grid-template-columns:56px 1fr 46px}.row .ip,.row .sm{grid-column:2/3}.row .tagwrap{grid-column:2/3}}
+
+/* lists */
+.list{display:flex;flex-direction:column;gap:8px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 11px;border-radius:11px;background:var(--soft);font-size:12.5px}
+.bar{height:6px;border-radius:5px;background:var(--red-soft);overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:var(--red)}
+.empty{color:var(--ink3);font-size:12.5px;padding:6px 2px}
+.scroll{max-height:200px;overflow:auto}
+
+/* forms */
+label.f{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin:0 0 6px}
+.field{margin-bottom:12px}
+.note{font-size:12px;color:var(--ink2);background:var(--soft);border-radius:12px;padding:10px 12px}
+.linkbox{display:flex;gap:8px;margin-top:10px}.linkbox input{font-family:var(--mono);font-size:12px}
+.msgbox{border:2px dashed var(--line);border-radius:16px;padding:22px;text-align:center}
+.msgbox .txt{font-size:18px;font-weight:700;word-break:break-word;white-space:pre-wrap;margin:8px 0}
+.count{font-family:var(--mono);font-size:44px;font-weight:800;color:var(--red)}
+.prog{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:10px}.prog i{display:block;height:100%;background:var(--red);transition:width .25s linear}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:6px 10px;font-size:12.5px}
+.kv dt{color:var(--ink2);font-weight:700}.kv dd{margin:0;font-family:var(--mono);word-break:break-all}
+.metric{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.metric div{background:var(--soft);border-radius:14px;padding:12px}
+.metric b{display:block;font-family:var(--mono);font-size:22px}
+.metric span{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;max-width:320px;font-size:12px;text-align:center;align-items:center}
+.cm div{padding:10px;border-radius:10px;font-family:var(--mono);font-weight:700}
+.log{background:#0b1220;color:#9ff3c9;border-radius:14px;padding:12px;font-family:var(--mono);font-size:12px;max-height:220px;overflow:auto;white-space:pre-wrap}
+
+/* login / receiver */
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:50;padding:16px}
+.overlay .card{width:100%;max-width:420px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;z-index:60;box-shadow:var(--shadow);max-width:90vw}
+footer{text-align:center;color:var(--ink3);font-size:12px;margin-top:26px}
+</style>
+</head>
+<body>
+
+<!-- ========== Mode PENERIMA (publik, tanpa login) ========== -->
+<div id="receiver" class="overlay hidden">
+  <div class="card">
+    <h2>Pesan Taktis · KARTIKA-SENTINEL</h2>
+    <div id="rcv-start" class="msgbox">
+      <div class="muted">Anda menerima pesan rahasia sekali-baca.</div>
+      <div class="note" style="margin:12px 0;text-align:left">Setelah dibuka, pesan hanya tampil <b>10 detik</b> lalu <b>dihancurkan permanen</b> dari layar dan dari memori server. Tidak dapat dibuka lagi.</div>
+      <button class="btn primary" id="rcv-open">Buka pesan sekarang</button>
+    </div>
+    <div id="rcv-show" class="msgbox hidden">
+      <div class="faint" style="font-size:12px;font-weight:700;letter-spacing:.06em">PESAN AKAN HANCUR DALAM</div>
+      <div class="count" id="rcv-count">10</div>
+      <div class="txt" id="rcv-text"></div>
+      <div class="prog"><i id="rcv-bar" style="width:100%"></i></div>
+    </div>
+    <div id="rcv-gone" class="msgbox hidden">
+      <div style="font-size:34px">&#128165;</div>
+      <div class="txt" id="rcv-gone-t">Pesan telah dihancurkan.</div>
+      <div class="muted">Pesan tidak tersimpan di server maupun di halaman ini.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LOGIN ADMIN ========== -->
+<div id="login" class="overlay hidden">
+  <div class="card">
+    <div class="brand" style="margin-bottom:14px">
+      <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2-1 4-3 6-4 2 1 4 3 6 4a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <div><h1>KARTIKA<span>-</span>SENTINEL</h1><div class="sub">Masuk sebagai operator</div></div>
+    </div>
+    <div class="field"><label class="f" for="key">Admin API key</label>
+      <input class="in mono" id="key" type="password" autocomplete="off" placeholder="KSA-..."></div>
+    <div class="note" style="margin-bottom:12px">Key ditampilkan di terminal saat server dijalankan dan tersimpan di <span class="mono">backend/data/admin_key.txt</span>.</div>
+    <div id="login-err" class="c-red" style="font-weight:700;min-height:20px;font-size:13px"></div>
+    <button class="btn primary" id="login-btn" style="width:100%">Masuk</button>
+  </div>
+</div>
+
+<!-- ========== APLIKASI ADMIN ========== -->
+<div class="wrap hidden" id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2-1 4-3 6-4 2 1 4 3 6 4a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <div><h1>KARTIKA<span>-</span>SENTINEL</h1>
+      <div class="sub">AI-Powered Hybrid Threat Detection &amp; Adaptive Perimeter Defense</div></div>
+    </div>
+    <div class="actions">
+      <span class="pill" id="status"><i class="dot"></i><span id="status-t">ONLINE</span></span>
+      <button class="btn" id="theme" title="Ganti tema">Tema</button>
+      <button class="btn ghost" id="logout">Keluar</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-t="monitor" class="on">Monitor</button>
+    <button data-t="msg">Pesan Taktis</button>
+    <button data-t="trap">Trapdoor &amp; Vault <span class="badge hidden" id="trap-badge">0</span></button>
+    <button data-t="audit">Audit &amp; Metrik</button>
+  </nav>
+
+  <!-- ===== MONITOR ===== -->
+  <section id="t-monitor">
+    <div id="alarm" class="alarm hidden"></div>
+
+    <div class="grid g4" style="margin-bottom:14px">
+      <div class="card stat"><div class="l">Request diperiksa <span class="ico bg-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span></div><div class="v" id="s-req">0</div></div>
+      <div class="card stat"><div class="l">Ancaman diblokir <span class="ico bg-red"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></span></div><div class="v c-red" id="s-blk">0</div></div>
+      <div class="card stat"><div class="l">IP diblokir aktif <span class="ico bg-amber"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div><div class="v c-amber" id="s-ip">0</div></div>
+      <div class="card stat"><div class="l">Jebakan terpicu <span class="ico bg-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></span></div><div class="v c-green" id="s-trap">0</div></div>
+    </div>
+
+    <div class="grid g2" style="margin-bottom:14px">
+      <div class="card">
+        <h2>Tren traffic (60 detik terakhir)
+          <span class="legend"><span><i style="background:var(--blue)"></i>Request</span><span><i style="background:var(--red)"></i>Diblokir</span></span></h2>
+        <svg class="chart" id="chart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="card">
+        <h2>Simulasi serangan</h2>
+        <div class="list" style="gap:6px">
+          <button class="btn primary" id="sim-loop">&#9654; Mulai traffic normal</button>
+          <div class="grid g2e" style="gap:6px">
+            <button class="btn sm" data-sim="bruteforce">Brute-force</button>
+            <button class="btn sm" data-sim="sqli">SQLi / XSS</button>
+            <button class="btn sm" data-sim="scan">Scan jalur</button>
+            <button class="btn sm" data-sim="flood">Flood</button>
+          </div>
+          <button class="btn danger" data-sim="killchain">&#9889; Jalankan KILL CHAIN lengkap</button>
+          <button class="btn ghost sm" id="reset">Reset data demo</button>
+        </div>
+        <div class="note" style="margin-top:10px">Kill chain: pengintaian &rarr; menemukan file umpan &rarr; memakai kunci jebakan &rarr; alarm merah &rarr; IP terkunci.</div>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h2>Log keamanan real-time <span class="faint" id="feed-n"></span></h2>
+        <div class="toolbar">
+          <div class="seg" id="filter">
+            <button data-f="all" class="on">Semua</button><button data-f="blocked">Diblokir</button>
+            <button data-f="alarm">Alarm</button><button data-f="msg">Pesan</button>
+          </div>
+          <input class="in mono" id="q" placeholder="Cari IP / teks..." style="max-width:200px">
+          <button class="btn sm" id="pause">Jeda</button>
+        </div>
+        <div class="feed" id="feed"></div>
+        <div class="faint" style="font-size:12px;margin-top:8px">Klik baris untuk melihat alasan, pemetaan MITRE ATT&amp;CK, dan detail teknis.</div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card"><h2>Top IP penyerang</h2><div class="list" id="top"></div></div>
+        <div class="card"><h2>IP sedang diblokir</h2><div class="list scroll" id="blocklist"></div></div>
+        <div class="card"><h2>Teknik MITRE ATT&amp;CK terdeteksi</h2><div id="mitre"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PESAN TAKTIS ===== -->
+  <section id="t-msg" class="hidden">
+    <div class="grid g2e">
+      <div class="card">
+        <h2>Sisi pengirim</h2>
+        <div class="field"><label class="f" for="m-text">Pesan / koordinat (data fiktif untuk demo)</label>
+          <textarea class="in" id="m-text" rows="4" maxlength="2000">Koordinat titik kumpul: 6°10'S 106°49'E. Berangkat 04.30.</textarea></div>
+        <div class="field"><label class="f" for="m-ttl">Kedaluwarsa bila tidak dibuka</label>
+          <select class="in" id="m-ttl"><option value="60">1 menit</option><option value="600" selected>10 menit</option><option value="3600">1 jam</option></select></div>
+        <button class="btn primary" id="m-send">Enkripsi &amp; buat tautan</button>
+        <div id="m-out" class="hidden">
+          <div class="linkbox"><input class="in" id="m-link" readonly><button class="btn" id="m-copy">Salin</button></div>
+          <div style="margin-top:8px"><a id="m-open" target="_blank" rel="noopener" class="btn sm" style="text-decoration:none;display:inline-block">Buka sebagai penerima</a></div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Cara kerja:</b> pesan dienkripsi <b>AES-256-GCM</b>, kunci hanya ada di memori server (tidak pernah ditulis ke disk). Penerima membukanya sekali; pesan tampil 10 detik lalu dihancurkan permanen &mdash; kunci ditimpa nol dan data dihapus dari memori.</div>
+      </div>
+      <div class="card">
+        <h2>Pesan menunggu dibuka</h2>
+        <div class="list" id="m-pending"></div>
+        <h2 style="margin-top:20px">Log pesan taktis</h2>
+        <div class="list scroll" id="m-log"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRAPDOOR ===== -->
+  <section id="t-trap" class="hidden">
+    <div class="grid g2e" style="margin-bottom:14px">
+      <div class="card">
+        <h2>Database intel &amp; dua kunci</h2>
+        <div class="muted" style="margin-bottom:12px">Database <span class="mono" id="v-file">intel_secret.enc</span> dienkripsi (Fernet / scrypt). Ada dua kunci yang tampak identik:</div>
+        <dl class="kv">
+          <dt>Kunci SAH</dt><dd id="v-valid">-</dd>
+          <dt>Kunci JEBAKAN</dt><dd id="v-trap">-</dd>
+        </dl>
+        <div class="note" style="margin-top:12px">Kunci jebakan sengaja "bocor" di file umpan <span class="mono">/gw/backup/config.bak</span>. Penyusup yang memakainya mendapat <b>data palsu</b> sementara sistem diam-diam merekam IP, waktu, dan fingerprint perangkat, memicu alarm merah, dan mengunci IP-nya.</div>
+        <h2 style="margin-top:18px">Coba sendiri (memakai IP simulasi, aman untuk laptop Anda)</h2>
+        <div class="list" style="gap:6px">
+          <button class="btn" id="v-real">Buka vault dengan kunci SAH</button>
+          <button class="btn danger" id="v-fake">Buka vault dengan kunci JEBAKAN (sebagai peretas)</button>
+          <button class="btn" id="v-honey">Akses file umpan /backup/config.bak</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Hasil</h2>
+        <pre class="log" id="v-out">Belum ada percobaan.</pre>
+        <h2 style="margin-top:18px">Alarm jebakan terbaru</h2>
+        <div class="list scroll" id="v-alarms"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AUDIT ===== -->
+  <section id="t-audit" class="hidden">
+    <div class="grid g2e" style="margin-bottom:14px">
+      <div class="card">
+        <h2>Akurasi model (data uji berlabel)</h2>
+        <div class="metric" id="mt"></div>
+        <div style="margin-top:14px" class="muted" id="mt-info"></div>
+        <div style="margin-top:12px"><div class="cm" id="mt-cm"></div></div>
+        <div class="note" style="margin-top:12px" id="mt-note"></div>
+      </div>
+      <div class="card">
+        <h2>Integritas log (hash chain)</h2>
+        <div class="muted" style="margin-bottom:10px">Setiap entri log memuat hash SHA-256 dari entri sebelumnya. Mengubah satu entri akan memutus rantai &mdash; perubahan oleh penyusup langsung ketahuan.</div>
+        <dl class="kv" style="margin-bottom:12px"><dt>Jumlah entri</dt><dd id="a-n">0</dd><dt>Hash terakhir</dt><dd id="a-h">-</dd></dl>
+        <div class="actions">
+          <button class="btn primary" id="a-verify">Verifikasi integritas</button>
+          <button class="btn" id="a-tamper">Simulasikan penyusup mengubah log</button>
+          <button class="btn" id="a-csv">Unduh laporan insiden (CSV)</button>
+        </div>
+        <pre class="log" id="a-out" style="margin-top:12px">Tekan "Verifikasi integritas".</pre>
+      </div>
+    </div>
+  </section>
+
+  <footer>KARTIKA-SENTINEL &middot; Purwarupa Kartika Cyber Hackathon 2026 &middot; seluruh data pada demo ini fiktif</footer>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+"use strict";
+/* ---------------- util ---------------- */
+const $ = (id) => document.getElementById(id);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "class") el.className = v; else if (k === "text") el.textContent = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v); else el.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) if (c != null) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return el;
+}
+function safeGet(k) { try { return sessionStorage.getItem(k) || ""; } catch (e) { return ""; } }
+function safeSet(k, v) { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch (e) {} }
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.remove("hidden"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add("hidden"), 2600); }
+function randSimIp() { return "10.66.66." + (2 + Math.floor(Math.random() * 250)); }
+function fmt(n) { return Number(n).toLocaleString("id-ID"); }
+
+/* ---------------- tema ---------------- */
+(function () {
+  const saved = lsGet("sentinel-theme");
+  const dark = saved ? saved === "dark" : window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+})();
+
+/* ---------------- mode penerima ---------------- */
+const params = new URLSearchParams(location.search);
+const msgId = params.get("m");
+if (msgId) {
+  $("receiver").classList.remove("hidden");
+  $("rcv-open").addEventListener("click", async () => {
+    $("rcv-open").disabled = true;
+    let r, data = null;
+    try { r = await fetch("/api/msg/open/" + encodeURIComponent(msgId), { method: "POST" }); data = await r.json(); } catch (e) { r = null; }
+    $("rcv-start").classList.add("hidden");
+    if (!r || !r.ok) {
+      $("rcv-gone-t").textContent = "Pesan tidak ditemukan, sudah dihancurkan, atau kedaluwarsa.";
+      $("rcv-gone").classList.remove("hidden"); return;
+    }
+    $("rcv-text").textContent = data.text; data = null;
+    $("rcv-show").classList.remove("hidden");
+    const total = 10, t0 = Date.now();
+    const iv = setInterval(() => {
+      const left = Math.max(0, total - (Date.now() - t0) / 1000);
+      $("rcv-count").textContent = Math.ceil(left);
+      $("rcv-bar").style.width = (left / total * 100) + "%";
+      if (left <= 0) {
+        clearInterval(iv);
+        $("rcv-text").textContent = "";
+        $("rcv-show").classList.add("hidden");
+        $("rcv-gone-t").textContent = "Pesan telah dihancurkan.";
+        $("rcv-gone").classList.remove("hidden");
+        history.replaceState(null, "", location.pathname);
+      }
+    }, 100);
+  });
+}
+
+/* ---------------- admin ---------------- */
+let KEY = safeGet("sentinel-key");
+let paused = false, filter = "all", query = "", state = null, expanded = new Set(), dismissedAlarm = 0, simLoop = false;
+
+async function api(path, opts) {
+  opts = opts || {};
+  const headers = Object.assign({ "X-API-Key": KEY }, opts.headers || {});
+  const r = await fetch(path, Object.assign({}, opts, { headers }));
+  if (r.status === 401 && path !== "/api/admin/ping") { logout(); throw new Error("401"); }
+  return r;
+}
+function showLogin(msg) { $("app").classList.add("hidden"); $("login").classList.remove("hidden"); $("login-err").textContent = msg || ""; }
+function logout() { KEY = ""; safeSet("sentinel-key", ""); stopPoll(); showLogin(""); }
+async function tryLogin(k) {
+  KEY = k;
+  try {
+    const r = await fetch("/api/admin/ping", { headers: { "X-API-Key": KEY } });
+    if (r.status === 429) { showLogin("Terlalu banyak percobaan. Tunggu sebentar."); return; }
+    if (!r.ok) { KEY = ""; showLogin("API key tidak valid."); return; }
+  } catch (e) { KEY = ""; showLogin("Server tidak dapat dihubungi."); return; }
+  safeSet("sentinel-key", KEY);
+  $("login").classList.add("hidden"); $("app").classList.remove("hidden");
+  startPoll(); loadVault();
+}
+$("login-btn").addEventListener("click", () => tryLogin($("key").value.trim()));
+$("key").addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin($("key").value.trim()); });
+$("logout").addEventListener("click", logout);
+$("theme").addEventListener("click", () => {
+  const d = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = d; lsSet("sentinel-theme", d); if (state) drawChart(state.timeline);
+});
+
+/* tab */
+$("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-t]"); if (!b) return;
+  document.querySelectorAll("#tabs button").forEach((x) => x.classList.toggle("on", x === b));
+  ["monitor", "msg", "trap", "audit"].forEach((t) => $("t-" + t).classList.toggle("hidden", t !== b.dataset.t));
+  if (b.dataset.t === "audit") renderAudit();
+});
+
+/* polling */
+let pollT = null, failCount = 0;
+function startPoll() { stopPoll(); poll(); pollT = setInterval(poll, 1000); }
+function stopPoll() { if (pollT) clearInterval(pollT); pollT = null; }
+async function poll() {
+  if (document.hidden) return;
+  try {
+    const r = await api("/api/admin/state");
+    state = await r.json(); failCount = 0; setOnline(true); render();
+  } catch (e) { if (String(e.message) !== "401") { failCount++; if (failCount >= 2) setOnline(false); } }
+}
+function setOnline(ok) { $("status").classList.toggle("off", !ok); $("status-t").textContent = ok ? "SISTEM ONLINE" : "API OFFLINE"; }
+
+/* render */
+const TYPE_LABEL = {
+  TRAFFIC: "Traffic", BLOCK: "Blokir IP", UNBLOCK: "Lepas blokir", TRAPDOOR_TRIGGERED: "TRAPDOOR", HONEYTOKEN_ACCESS: "Honeytoken",
+  VAULT_ACCESS: "Vault", MSG_CREATED: "Pesan dibuat", MSG_DESTROYED: "Pesan hancur", MSG_EXPIRED: "Pesan kedaluwarsa",
+  MSG_INVALID_ACCESS: "Akses pesan salah", ADMIN_LOGIN_FAIL: "Login admin gagal", SYSTEM: "Sistem",
+};
+function tagFor(e) {
+  if (e.type === "TRAPDOOR_TRIGGERED") return ["crit", "TRAPDOOR"];
+  if (e.type === "HONEYTOKEN_ACCESS") return ["bad", "HONEYTOKEN"];
+  if (e.type === "MSG_DESTROYED") return ["warn", "PESAN HANCUR"];
+  if (e.type === "BLOCK") return ["bad", "IP DIBLOKIR"];
+  if (e.type === "TRAFFIC") return e.status === "BLOCKED" ? ["bad", "BLOCKED"] : e.status === "SUSPICIOUS" ? ["warn", "SUSPICIOUS"] : ["ok", "PASSED"];
+  if (e.severity === "MEDIUM" || e.status === "BLOCKED") return ["warn", TYPE_LABEL[e.type] || e.type];
+  return ["info", TYPE_LABEL[e.type] || e.type];
+}
+function matchFilter(e) {
+  if (filter === "blocked" && !(e.status === "BLOCKED" || e.type === "BLOCK")) return false;
+  if (filter === "alarm" && !(e.type === "TRAPDOOR_TRIGGERED" || e.type === "HONEYTOKEN_ACCESS")) return false;
+  if (filter === "msg" && !e.type.startsWith("MSG_")) return false;
+  if (query && !(e.ip.includes(query) || e.summary.toLowerCase().includes(query.toLowerCase()))) return false;
+  return true;
+}
+function detailNode(e) {
+  const box = h("div", { class: "detail" });
+  if (e.reasons.length) box.append(h("div", {}, h("b", { text: "Alasan: " }), e.reasons.join("; ")));
+  if (e.mitre.length) box.append(h("div", { style: "margin-top:6px" }, h("b", { text: "MITRE ATT&CK: " }), e.mitre.map((m) => h("span", { class: "chip", text: m }))));
+  box.append(h("div", { style: "margin-top:6px" }, h("b", { text: "Hash: " }), h("span", { class: "mono faint", text: e.hash.slice(0, 32) + "…" })));
+  if (e.details && Object.keys(e.details).length) box.append(h("pre", { text: JSON.stringify(e.details, null, 2) }));
+  return box;
+}
+function renderFeed() {
+  if (paused) return;
+  const evs = state.events.filter(matchFilter);
+  $("feed-n").textContent = evs.length + " entri";
+  const feed = $("feed"); const frag = document.createDocumentFragment();
+  if (!evs.length) frag.append(h("div", { class: "empty", style: "padding:16px", text: state.events.length ? "Tidak ada entri yang cocok." : "Belum ada aktivitas. Tekan \"Mulai traffic normal\" atau jalankan simulasi serangan." }));
+  for (const e of evs) {
+    const [cls, label] = tagFor(e);
+    const rowCls = "row" + (e.type === "TRAPDOOR_TRIGGERED" ? " crit" : e.status === "BLOCKED" && e.type === "TRAFFIC" ? " bad" : "");
+    const row = h("div", { class: rowCls, onclick: () => { expanded.has(e.id) ? expanded.delete(e.id) : expanded.add(e.id); renderFeed(); } },
+      h("span", { class: "tm", text: e.time }), h("span", { class: "ip", text: e.ip }),
+      h("span", { class: "tagwrap" }, h("span", { class: "tag " + cls, text: label })),
+      h("span", { class: "sm", text: e.summary, title: e.summary }),
+      h("span", { class: "rk " + (e.risk >= 70 ? "c-red" : e.risk >= 40 ? "c-amber" : "faint"), text: e.risk ? String(e.risk) : "" }));
+    frag.append(row);
+    if (expanded.has(e.id)) frag.append(detailNode(e));
+  }
+  const top = feed.scrollTop; feed.replaceChildren(frag); feed.scrollTop = top;
+}
+function drawChart(series) {
+  const svg = $("chart"); svg.replaceChildren();
+  const W = 600, H = 190, pad = 10, ns = "http://www.w3.org/2000/svg";
+  const max = Math.max(3, ...series.map((s) => s[0]));
+  const line = (key, color, fill) => {
+    const pts = series.map((s, i) => [i / (series.length - 1) * W, H - pad - (s[key] / max) * (H - 2 * pad)]);
+    const d = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+    if (fill) { const a = document.createElementNS(ns, "path"); a.setAttribute("d", d + ` L ${W} ${H} L 0 ${H} Z`); a.setAttribute("fill", color); a.setAttribute("opacity", ".13"); svg.append(a); }
+    const p = document.createElementNS(ns, "path"); p.setAttribute("d", d); p.setAttribute("fill", "none"); p.setAttribute("stroke", color);
+    p.setAttribute("stroke-width", "2.4"); p.setAttribute("stroke-linejoin", "round"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("vector-effect", "non-scaling-stroke"); svg.append(p);
+  };
+  const css = getComputedStyle(document.documentElement);
+  for (let i = 0; i <= 4; i++) {
+    const y = pad + i / 4 * (H - 2 * pad); const l = document.createElementNS(ns, "line");
+    l.setAttribute("x1", 0); l.setAttribute("x2", W); l.setAttribute("y1", y); l.setAttribute("y2", y);
+    l.setAttribute("stroke", css.getPropertyValue("--line").trim()); l.setAttribute("vector-effect", "non-scaling-stroke"); svg.append(l);
+  }
+  line(0, css.getPropertyValue("--blue").trim(), true); line(1, css.getPropertyValue("--red").trim(), false);
+  const t = document.createElementNS(ns, "text"); t.setAttribute("x", 6); t.setAttribute("y", 14); t.setAttribute("font-size", "11");
+  t.setAttribute("fill", css.getPropertyValue("--ink3").trim()); t.textContent = "maks " + max + " req/dtk"; svg.append(t);
+}
+function listOrEmpty(box, items, emptyText) { box.replaceChildren(...(items.length ? items : [h("div", { class: "empty", text: emptyText })])); }
+function render() {
+  const s = state.stats;
+  $("s-req").textContent = fmt(s.requests); $("s-blk").textContent = fmt(s.blocked);
+  $("s-ip").textContent = fmt(state.blocked_active); $("s-trap").textContent = fmt(s.trap_triggers + s.honeytoken_hits);
+  const badge = $("trap-badge"); badge.textContent = s.trap_triggers; badge.classList.toggle("hidden", !s.trap_triggers);
+
+  // alarm merah
+  const al = state.alarms.find((a) => a.type === "TRAPDOOR_TRIGGERED");
+  const box = $("alarm");
+  if (al && al.id !== dismissedAlarm) {
+    const d = al.details || {}, k = d.klien || {};
+    box.classList.remove("hidden"); box.replaceChildren(
+      h("div", { class: "t" }, h("span", { text: "⚠" }), h("span", { text: "ALARM MERAH — TRAPDOOR KEY TERSENTUH PERETAS" }),
+        h("button", { class: "btn sm ghost", style: "margin-left:auto", text: "Tutup", onclick: () => { dismissedAlarm = al.id; render(); } })),
+      h("dl", {},
+        ...[["IP penyerang", al.ip], ["Waktu akses", d.waktu || al.time], ["Fingerprint (server)", d.fingerprint_server || "-"],
+          ["User-Agent", d.user_agent || "-"], ["Perangkat (klien)", k.screen ? `${k.screen} · ${k.platform || ""} · ${k.tz || ""}` : "-"],
+          ["Kunci dipakai", d.kunci_dipakai || "-"], ["Tindakan", "Data PALSU diberikan · IP dikunci 1 jam"]]
+          .map(([a, b]) => h("div", {}, h("dt", { text: a }), h("dd", { text: String(b) })))));
+  } else box.classList.add("hidden");
+
+  drawChart(state.timeline); renderFeed();
+  const topMax = Math.max(1, ...state.top_attackers.map((t) => t.n));
+  listOrEmpty($("top"), state.top_attackers.map((t) => h("div", {}, h("div", { class: "mono", style: "display:flex;justify-content:space-between;font-size:12.5px" }, h("span", { text: t.ip }), h("b", { class: "c-red", text: t.n + "x" })), h("div", { class: "bar" }, h("i", { style: `width:${t.n / topMax * 100}%` })))), "Belum ada penyerang tercatat.");
+  listOrEmpty($("blocklist"), state.blocklist.map((b) => h("div", { class: "li" },
+    h("div", {}, h("div", { class: "mono", style: "font-weight:700", text: b.ip }), h("div", { class: "faint", style: "font-size:11px", text: `${b.source} · risiko ${b.risk} · ${b.sisa_detik}s` })),
+    h("button", { class: "btn sm", text: "Unblock", onclick: () => unblock(b.ip) }))), "Tidak ada IP yang diblokir.");
+  listOrEmpty($("mitre"), Object.entries(state.mitre).sort((a, b) => b[1] - a[1]).map(([k, v]) => h("span", { class: "chip", text: `${k} ×${v}` })), "Belum ada teknik terdeteksi.");
+
+  // pesan taktis
+  listOrEmpty($("m-pending"), state.messages.map((m) => h("div", { class: "li" }, h("span", { class: "mono", text: m.id }), h("span", { class: "faint", text: `kedaluwarsa ${m.sisa_detik} dtk` }))), "Tidak ada pesan menunggu.");
+  listOrEmpty($("m-log"), state.events.filter((e) => e.type.startsWith("MSG_")).slice(0, 20).map((e) => h("div", { class: "li" }, h("span", {}, h("span", { class: "tm faint mono", text: e.time + " " }), e.summary), h("span", { class: "tag " + tagFor(e)[0], text: tagFor(e)[1] }))), "Belum ada aktivitas pesan.");
+
+  // trap
+  listOrEmpty($("v-alarms"), state.alarms.map((a) => h("div", { class: "li" }, h("span", {}, h("span", { class: "mono", text: a.ip }), " ", a.summary), h("span", { class: "tag " + tagFor(a)[0], text: tagFor(a)[1] }))), "Belum ada alarm.");
+
+  // simulasi
+  simLoop = state.sim_loop; $("sim-loop").textContent = simLoop ? "■ Hentikan traffic normal" : "▶ Mulai traffic normal";
+  $("sim-loop").className = "btn " + (simLoop ? "danger" : "primary");
+  $("a-n").textContent = fmt(state.chain.events); $("a-h").textContent = state.chain.last_hash + "…";
+}
+async function unblock(ip) { try { await api("/api/admin/unblock/" + encodeURIComponent(ip), { method: "POST" }); toast("IP " + ip + " dilepas"); poll(); } catch (e) {} }
+
+/* filter & kontrol */
+$("filter").addEventListener("click", (e) => { const b = e.target.closest("button[data-f]"); if (!b) return; filter = b.dataset.f; document.querySelectorAll("#filter button").forEach((x) => x.classList.toggle("on", x === b)); renderFeed(); });
+$("q").addEventListener("input", (e) => { query = e.target.value.trim(); renderFeed(); });
+$("pause").addEventListener("click", () => { paused = !paused; $("pause").textContent = paused ? "Lanjut" : "Jeda"; if (!paused) renderFeed(); });
+$("sim-loop").addEventListener("click", async () => { try { await api("/api/admin/simulate/loop/" + (simLoop ? "stop" : "start"), { method: "POST" }); poll(); } catch (e) {} });
+document.querySelectorAll("[data-sim]").forEach((b) => b.addEventListener("click", async () => { try { await api("/api/admin/simulate/" + b.dataset.sim, { method: "POST" }); toast("Skenario " + b.dataset.sim + " dijalankan"); } catch (e) {} }));
+$("reset").addEventListener("click", async () => { if (!confirm("Hapus semua log, blokir, dan pesan demo?")) return; try { await api("/api/admin/reset", { method: "POST" }); expanded.clear(); dismissedAlarm = 0; toast("Data direset"); poll(); } catch (e) {} });
+
+/* pesan taktis */
+$("m-send").addEventListener("click", async () => {
+  const text = $("m-text").value; if (!text.trim()) { toast("Isi pesan dulu"); return; }
+  try {
+    const r = await api("/api/admin/msg", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, ttl: Number($("m-ttl").value) }) });
+    const d = await r.json(); if (!r.ok) { toast("Gagal membuat pesan"); return; }
+    $("m-link").value = d.link; $("m-open").href = d.link; $("m-out").classList.remove("hidden"); toast("Pesan terenkripsi dibuat"); poll();
+  } catch (e) {}
+});
+$("m-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("m-link").value); toast("Tautan disalin"); } catch (e) { $("m-link").select(); toast("Tekan Ctrl+C untuk menyalin"); } });
+
+/* vault / trapdoor */
+let vault = null;
+async function loadVault() { try { const r = await api("/api/admin/vault"); vault = await r.json(); $("v-valid").textContent = vault.valid_key; $("v-trap").textContent = vault.trap_key; $("v-file").textContent = vault.vault_file; } catch (e) {} }
+async function vaultTry(key, label) {
+  $("v-out").textContent = "Mengirim...";
+  const ip = randSimIp();
+  const fp = { screen: screen.width + "x" + screen.height, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, lang: navigator.language, platform: navigator.platform, cores: String(navigator.hardwareConcurrency || "") };
+  try {
+    const r = await fetch("/gw/vault/unlock", { method: "POST", headers: { "Content-Type": "application/json", "X-Sim-IP": ip }, body: JSON.stringify({ key, fp }) });
+    const t = await r.text(); let pretty = t; try { pretty = JSON.stringify(JSON.parse(t), null, 2); } catch (e) {}
+    $("v-out").textContent = `${label}\nIP simulasi: ${ip}\nHTTP ${r.status}\n\n${pretty}`; poll();
+  } catch (e) { $("v-out").textContent = "Gagal menghubungi server."; }
+}
+$("v-real").addEventListener("click", () => vault && vaultTry(vault.valid_key, "Kunci SAH"));
+$("v-fake").addEventListener("click", () => vault && vaultTry(vault.trap_key, "Kunci JEBAKAN → data palsu + alarm"));
+$("v-honey").addEventListener("click", async () => {
+  const ip = randSimIp();
+  try { const r = await fetch("/gw/backup/config.bak", { headers: { "X-Sim-IP": ip } }); $("v-out").textContent = `Akses file umpan\nIP simulasi: ${ip}\nHTTP ${r.status}\n\n${await r.text()}`; poll(); } catch (e) { $("v-out").textContent = "Gagal menghubungi server."; }
+});
+
+/* audit & metrik */
+function renderAudit() {
+  if (!state) return; const m = state.metrics || {};
+  const pct = (v) => (v * 100).toFixed(1) + "%";
+  const items = [["Precision", m.precision], ["Recall", m.recall], ["F1", m.f1], ["False positive", m.fpr], ["Akurasi", m.accuracy]];
+  $("mt").replaceChildren(...items.map(([k, v]) => h("div", {}, h("b", { text: v == null ? "-" : pct(v) }), h("span", { text: k }))));
+  $("mt-info").textContent = m.algoritma ? `${m.algoritma} · uji: ${m.uji_normal} normal + ${m.uji_serangan} serangan` : "";
+  const c = m.confusion;
+  if (c) $("mt-cm").replaceChildren(
+    h("span"), h("span", { class: "faint", text: "Diprediksi normal" }), h("span", { class: "faint", text: "Diprediksi serangan" }),
+    h("span", { class: "faint", text: "Normal" }), h("div", { class: "bg-green", text: "TN " + c.tn }), h("div", { class: "bg-amber", text: "FP " + c.fp }),
+    h("span", { class: "faint", text: "Serangan" }), h("div", { class: "bg-red", text: "FN " + c.fn }), h("div", { class: "bg-green", text: "TP " + c.tp }));
+  $("mt-note").textContent = m.catatan || "";
+}
+async function verify(tamper) {
+  try {
+    const r = await api("/api/admin/audit/verify" + (tamper ? "?simulate_tamper=true" : "")); const d = await r.json();
+    $("a-out").textContent = (tamper ? "[SIMULASI] Entri #" + d.tampered_id + " diubah di salinan log.\n" : "") +
+      (d.ok ? `✔ Rantai UTUH — ${d.total} entri terverifikasi.` : `✖ RANTAI RUSAK pada entri #${d.broken_at} (terverifikasi ${d.checked} dari ${d.total}).`) +
+      (tamper ? "\nLog asli tidak diubah." : "");
+  } catch (e) {}
+}
+$("a-verify").addEventListener("click", () => verify(false));
+$("a-tamper").addEventListener("click", () => verify(true));
+$("a-csv").addEventListener("click", async () => {
+  try { const r = await api("/api/admin/report.csv"); const b = await r.blob(); const a = h("a", { href: URL.createObjectURL(b), download: "laporan_insiden_kartika_sentinel.csv" }); document.body.append(a); a.click(); a.remove(); toast("Laporan diunduh"); } catch (e) {}
+});
+
+/* mulai */
+if (!msgId) { if (KEY) tryLogin(KEY); else showLogin(""); }
+</script>
+</body>
+</html>

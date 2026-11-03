@@ -1,0 +1,16 @@
+# Opsional. Cara utama menjalankan demo adalah run.bat / run.sh (lihat README).
+# Catatan Docker: request dari browser di host tampak datang dari IP gateway Docker (bukan 127.0.0.1),
+# sehingga header IP simulasi (X-Sim-IP) diabaikan dan tombol uji Trapdoor di dashboard akan memblokir
+# IP gateway Docker itu. Bila terjadi, tekan "Unblock" atau "Reset data demo". Simulasi serangan
+# (tombol di tab Monitor) tetap berjalan normal karena dijalankan di dalam server.
+services:
+  sentinel:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"   # hanya bisa diakses dari laptop sendiri
+    environment:
+      KARTIKA_ADMIN_KEY: "ganti-dengan-key-rahasia-anda"
+    volumes:
+      - sentinel-data:/app/backend/data
+volumes:
+  sentinel-data:
