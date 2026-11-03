@@ -366,7 +366,7 @@ Lewat variabel lingkungan:
 | Matriks konfusi | TP 1196 · FP 31 · TN 1169 · FN 4 |
 | Recall per jenis serangan | flood 100% · brute-force 98,7% · scan 100% · injection 100% |
 
-> **Penting:** angka ini berasal dari **data sintetis buatan sendiri** (traffic normal + 4 jenis serangan), jadi **bukan bukti performa di jaringan nyata**. Gunakan sebagai bukti bahwa pipeline deteksi bekerja, bukan sebagai klaim akurasi lapangan. Untuk klaim lebih kuat, latih dengan dataset publik (NSL-KDD atau CIC-IDS2017) dengan mengganti `gen_normal` dan `gen_attack` di `detection.py`, lalu `python train.py`.
+> **Penting:** angka ini berasal dari **data sintetis buatan sendiri** (traffic normal + 4 jenis serangan), jadi **bukan bukti performa di jaringan nyata**. 
 
 **Pengujian end-to-end** (dijalankan pada pipeline gateway sungguhan):
 
