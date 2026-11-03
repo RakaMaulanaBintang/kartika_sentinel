@@ -1,6 +1,6 @@
 # KARTIKA-SENTINEL
 
-**AI-Powered Hybrid Threat Detection & Adaptive Perimeter Defense** — purwarupa untuk Kartika Cyber Hackathon 2026, kategori *Penangkalan*.
+**AI Perimeter Defense & Cryptographic Trapdoor System** — purwarupa untuk Kartika Cyber Hackathon 2026, kategori *Penangkalan*.
 
 Satu sistem, satu alur cerita: **penyerang menyerang gerbang → diblokir otomatis → menemukan "kunci bocor" → terjebak trapdoor → alarm merah di dashboard** — ditambah komunikasi taktis sekali-baca yang hancur sendiri dan log audit yang tahan-ubah.
 
@@ -78,7 +78,3 @@ Variabel lingkungan: `KARTIKA_ADMIN_KEY`, `KARTIKA_BLOCK_THRESHOLD` (70), `KARTI
 - Pemblokiran berada di level aplikasi (gateway), belum menyentuh firewall OS (`iptables`/`nftables`). Rencana: integrasi aksi firewall nyata.
 - Berjalan satu proses; belum clustering/HA.
 - Kunci sah dan jebakan disimpan di `vault_keys.json` untuk keperluan demo; produksi memakai HSM/secret manager.
-
-## Dokumen yang perlu Anda siapkan untuk submission
-
-Link repo/demo (repo ini + README), thumbnail 1200×630 px (≤500 KB), maks. 5 screenshot dashboard, video YouTube ≤10 menit, slide presentasi. Batas: **15 November 2026 23:59 WIB**.
