@@ -18,13 +18,12 @@ Purwarupa sistem **penangkalan siber** untuk Kartika Cyber Hackathon 2026 (kateg
 8. [Audit log tahan-ubah](#8-audit-log-tahan-ubah)
 9. [Dashboard](#9-dashboard)
 10. [Cara menjalankan](#10-cara-menjalankan)
-11. [Skenario demo](#11-skenario-demo)
-12. [Referensi API](#12-referensi-api)
-13. [Konfigurasi](#13-konfigurasi)
-14. [Keamanan sistem ini sendiri](#14-keamanan-sistem-ini-sendiri)
-15. [Hasil pengujian dan akurasi model](#15-hasil-pengujian-dan-akurasi-model)
-16. [Batasan](#16-batasan)
-17. [Struktur folder](#17-struktur-folder)
+11. [Referensi API](#11-referensi-api)
+12. [Konfigurasi](#12-konfigurasi)
+13. [Keamanan sistem ini sendiri](#13-keamanan-sistem-ini-sendiri)
+14. [Hasil pengujian dan akurasi model](#14-hasil-pengujian-dan-akurasi-model)
+15. [Batasan](#15-batasan)
+16. [Struktur folder](#16-struktur-folder)
 
 ---
 
@@ -238,7 +237,7 @@ Setiap kejadian (traffic, blokir, pesan, trapdoor, login admin gagal) masuk ke s
   - **Unduh laporan insiden (CSV)**: seluruh kejadian beserta alasan, MITRE, dan hash. Sel dinetralkan dari formula injection spreadsheet.
 - Menyimpan sampai 5.000 entri terakhir; entri tertua yang dibuang dijadikan jangkar rantai agar verifikasi tetap valid.
 
-Batasan: log hidup di memori server. Bila server restart, log kosong kembali (lihat bagian 16).
+Batasan: log hidup di memori server. Bila server restart, log kosong kembali (lihat bagian 15).
 
 ---
 
@@ -277,10 +276,6 @@ cd backend
 python -m uvicorn app:app --host 127.0.0.1 --port 8000
 ```
 
----
-
-## 11. Skenario demo
-
 Urutan yang disarankan untuk video (±3 menit). Klik **Reset data demo** dulu agar layar bersih.
 
 1. **Traffic normal**: tekan *Mulai traffic normal* → baris hijau `PASSED`, grafik bergerak.
@@ -296,7 +291,7 @@ Simulator memakai header `X-Sim-IP` agar tiap "penyerang" punya IP berbeda. Head
 
 ---
 
-## 12. Referensi API
+## 11. Referensi API
 
 **Publik**
 
@@ -324,7 +319,7 @@ Simulator memakai header `X-Sim-IP` agar tiap "penyerang" punya IP berbeda. Head
 
 ---
 
-## 13. Konfigurasi
+## 12. Konfigurasi
 
 Lewat variabel lingkungan:
 
@@ -341,7 +336,7 @@ Lewat variabel lingkungan:
 
 ---
 
-## 14. Keamanan sistem ini sendiri
+## 13. Keamanan sistem ini sendiri
 
 - **Admin API** dilindungi API key, dibandingkan dengan pembanding waktu-konstan. **8 kegagalan per menit** per IP → `429`; setiap kegagalan dicatat sebagai insiden (T1110).
 - Server hanya mendengarkan **`127.0.0.1`**; CORS dibatasi ke localhost; dashboard dilayani dengan header `Content-Security-Policy`, `X-Frame-Options: DENY`, dan `nosniff`.
@@ -352,7 +347,7 @@ Lewat variabel lingkungan:
 
 ---
 
-## 15. Hasil pengujian dan akurasi model
+## 14. Hasil pengujian dan akurasi model
 
 **Akurasi model** (data uji berlabel, `backend/data/metrics.json`; ditampilkan di tab *Audit & Metrik*). Contoh hasil pelatihan dengan seed tetap:
 
@@ -383,7 +378,7 @@ Lewat variabel lingkungan:
 
 ---
 
-## 16. Batasan
+## 15. Batasan
 
 **Batasan purwarupa saat ini**
 
@@ -395,7 +390,7 @@ Lewat variabel lingkungan:
 
 ---
 
-## 17. Struktur folder
+## 16. Struktur folder
 
 ```
 kartika_sentinel/
@@ -415,7 +410,7 @@ kartika_sentinel/
     ├── simulator.py        # skenario serangan
     ├── attack_sim.py       # simulator serangan via command line
     ├── train.py            # latih ulang model
-    └── data/               # dibuat otomatis: model, vault, key (jangan di-commit)
+    └── data/               # dibuat otomatis: model, vault, key 
 ```
 
 **Teknologi:** Python, FastAPI, scikit-learn (Isolation Forest), `cryptography` (AES-GCM, Fernet), httpx, HTML/CSS/JavaScript tanpa framework.
