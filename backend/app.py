@@ -21,6 +21,14 @@ import messages
 import simulator
 from core import client_ip, emit, require_admin, stats
 from target import target_app
+from fastapi import FastAPI
+from mangum import Mangum
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"status": "Kartika Sentinel API Running"}
 
 FRONTEND = Path(__file__).resolve().parent.parent / "frontend" / "index.html"
 MAX_BODY = 1_000_000
@@ -308,3 +316,5 @@ async def dashboard():
         "Referrer-Policy": "no-referrer",
         "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:",
     })
+
+handler = Mangum(app)
