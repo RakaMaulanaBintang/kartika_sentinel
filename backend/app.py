@@ -23,8 +23,15 @@ from core import client_ip, emit, require_admin, stats
 from target import target_app
 from fastapi import FastAPI
 from mangum import Mangum
+import sys
+from pathlib import Path
 
 app = FastAPI()
+
+FILE_DIR = Path(__file__).resolve().parent
+ROOT_DIR = FILE_DIR.parent
+sys.path.append(str(FILE_DIR))
+sys.path.append(str(ROOT_DIR))
 
 @app.get("/")
 def read_root():
